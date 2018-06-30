@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "668724667687",
+    "firebase_url": "https://lostdroid-d5048.firebaseio.com",
+    "project_id": "lostdroid-d5048",
+    "storage_bucket": "lostdroid-d5048.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:668724667687:android:8d022e8a30fe0b6f",
+        "android_client_info": {
+          "package_name": "com.example.kalakoff.bgc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "668724667687-i9umoamd1pr6a92q3sosp07t4bu0lksv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.kalakoff.bgc",
+            "certificate_hash": "2ae8670bf82c091be762a4ea57b59d3463a81ddd"
+          }
+        },
+        {
+          "client_id": "668724667687-trodaoemeclpt6qrit16jbj0k9q8gb4q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYsYjLY66z7ljfZ5HmnY8lnPOhxd3q03E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "668724667687-trodaoemeclpt6qrit16jbj0k9q8gb4q.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
