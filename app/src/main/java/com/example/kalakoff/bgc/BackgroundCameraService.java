@@ -26,38 +26,39 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EventListener;
 
-public class BackgroundCameraService extends HiddenCameraService implements ValueEventListener {
-
-    static String value = "OFF";
-    static String userId = "user0010";  //user id of the current logged in user
-    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference mRootReference = firebaseDatabase.getReference("mobiles/"+userId);    //root directory + user id
-    private DatabaseReference mLostmodeReference = mRootReference.child("lostmode");    //2nd child, first child is user id
+public class BackgroundCameraService extends HiddenCameraService{
 
     @Nullable
     @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
+    public IBinder onBind(Intent intent) { return null; }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        //starting the refrence listener for any changes in the database
-        mLostmodeReference.addValueEventListener(this);
+        Toast.makeText(getApplicationContext(),"Service Started",Toast.LENGTH_SHORT ).show();
+        String[] value = new String[1];
+        FileTask fileTask = new FileTask(value);
 
-        if(value=="ON")
+
+        value=fileTask.readDataFromFile();
+
+        if(value[0].equals("ON"))
         {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
 
-                if (HiddenCameraUtils.canOverDrawOtherApps(this)) {
+                if (HiddenCameraUtils.canOverDrawOtherApps(getApplicationContext())) {
                     CameraConfig cameraConfig = new CameraConfig()
-                            .getBuilder(this)
+                            .getBuilder(getApplicationContext())
                             .setCameraFacing(CameraFacing.FRONT_FACING_CAMERA)
                             .setCameraResolution(CameraResolution.HIGH_RESOLUTION)
                             .setImageFormat(CameraImageFormat.FORMAT_JPEG)
@@ -74,11 +75,11 @@ public class BackgroundCameraService extends HiddenCameraService implements Valu
                 } else {
 
                     //Open settings to grant permission for "Draw other apps".
-                    HiddenCameraUtils.openDrawOverPermissionSetting(this);
+                    HiddenCameraUtils.openDrawOverPermissionSetting(getApplicationContext());
                 }
             } else {
                 //TODO Ask your parent activity for providing runtime permission
-                Toast.makeText(this, "Camera permission not available", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Camera permission not available", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -144,10 +145,12 @@ public class BackgroundCameraService extends HiddenCameraService implements Valu
 
     @Override
     public void onDestroy() {
-        //Toast.makeText(this,"Service Stopped",Toast.LENGTH_LONG ).show();
+        Toast.makeText(this,"Service Stopped",Toast.LENGTH_SHORT).show();
         super.onDestroy();
     }
     private File getDir() {
+
+        //this returns the path to store image
         File sdDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);    //creating a file directory in Picture folder
         return new File(sdDir, ".LostDroid");    //returning the file object with creating a folder name
     }
@@ -172,37 +175,6 @@ public class BackgroundCameraService extends HiddenCameraService implements Valu
         return fileName;
     }
 
-    @Override
-    public void onDataChange(DataSnapshot dataSnapshot) {
 
-        //check for data chages
-
-        if(dataSnapshot.getValue(String.class)!=null)
-        {
-            //checking for data
-            String key = dataSnapshot.getKey();
-            if (key.equals("lostmode"))
-            {
-                String status = dataSnapshot.getValue(String.class);
-                value = status;
-                //Toast.makeText(this, status, Toast.LENGTH_SHORT).show();
-                if(status!= null)
-                {
-                    if(status.equals("ON"))//start service on main thread to take front photo
-                    {
-                        Intent intet= new Intent(this, FrontCamService.class);
-                        startService(intet);
-                    }
-                }
-
-
-            }
-        }
-
-    }
-    @Override
-    public void onCancelled(DatabaseError databaseError) {
-
-    }
 
 }

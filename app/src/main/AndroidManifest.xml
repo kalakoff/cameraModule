@@ -40,6 +40,12 @@
         <service android:name=".BackgroundCameraService"
             android:exported="false"/>
 
+        <receiver
+            android:name=".LostmodeAlarm"
+            android:enabled="true"
+            android:process=":remote" >
+        </receiver>
+
     </application>
 
 </manifest>

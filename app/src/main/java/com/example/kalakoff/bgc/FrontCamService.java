@@ -37,12 +37,12 @@ public class FrontCamService extends HiddenCameraService {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Toast.makeText(this,"Service Started",Toast.LENGTH_LONG ).show();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+        Toast.makeText(getApplicationContext(),"Service Started",Toast.LENGTH_LONG ).show();
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
 
-            if (HiddenCameraUtils.canOverDrawOtherApps(this)) {
+            if (HiddenCameraUtils.canOverDrawOtherApps(getApplicationContext())) {
                 CameraConfig cameraConfig = new CameraConfig()
-                        .getBuilder(this)
+                        .getBuilder(getApplicationContext())
                         .setCameraFacing(CameraFacing.FRONT_FACING_CAMERA)
                         .setCameraResolution(CameraResolution.HIGH_RESOLUTION)
                         .setImageFormat(CameraImageFormat.FORMAT_JPEG)
@@ -59,11 +59,11 @@ public class FrontCamService extends HiddenCameraService {
             } else {
 
                 //Open settings to grant permission for "Draw other apps".
-                HiddenCameraUtils.openDrawOverPermissionSetting(this);
+                HiddenCameraUtils.openDrawOverPermissionSetting(getApplicationContext());
             }
         } else {
             //TODO Ask your parent activity for providing runtime permission
-            Toast.makeText(this, "Camera permission not available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Camera permission not available", Toast.LENGTH_SHORT).show();
         }
         return START_NOT_STICKY;
     }
@@ -88,7 +88,7 @@ public class FrontCamService extends HiddenCameraService {
             e.printStackTrace();
         }
 
-        Toast.makeText(this, "image captured", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "image captured", Toast.LENGTH_SHORT).show();
         Log.d("Image capture", imageFile.length() + "");
         stopSelf();
     }
@@ -99,24 +99,24 @@ public class FrontCamService extends HiddenCameraService {
             case CameraError.ERROR_CAMERA_OPEN_FAILED:
                 //Camera open failed. Probably because another application
                 //is using the camera
-                Toast.makeText(this, "Cannot open camera.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Cannot open camera.", Toast.LENGTH_LONG).show();
                 break;
             case CameraError.ERROR_IMAGE_WRITE_FAILED:
                 //Image write failed. Please check if you have provided WRITE_EXTERNAL_STORAGE permission
-                Toast.makeText(this, "Cannot write image captured by camera.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Cannot write image captured by camera.", Toast.LENGTH_LONG).show();
                 break;
             case CameraError.ERROR_CAMERA_PERMISSION_NOT_AVAILABLE:
                 //camera permission is not available
                 //Ask for the camera permission before initializing it.
-                Toast.makeText(this, "Camera permission not available.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Camera permission not available.", Toast.LENGTH_LONG).show();
                 break;
             case CameraError.ERROR_DOES_NOT_HAVE_OVERDRAW_PERMISSION:
                 //Display information dialog to the user with steps to grant "Draw over other app"
                 //permission for the app.
-                HiddenCameraUtils.openDrawOverPermissionSetting(this);
+                HiddenCameraUtils.openDrawOverPermissionSetting(getApplicationContext());
                 break;
             case CameraError.ERROR_DOES_NOT_HAVE_FRONT_CAMERA:
-                Toast.makeText(this, "Your device does not have front camera.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Your device does not have front camera.", Toast.LENGTH_LONG).show();
                 break;
         }
 
@@ -125,7 +125,7 @@ public class FrontCamService extends HiddenCameraService {
 
     @Override
     public void onDestroy() {
-        Toast.makeText(this,"Service Stopped",Toast.LENGTH_LONG ).show();
+        Toast.makeText(getApplicationContext(),"Service Stopped",Toast.LENGTH_LONG ).show();
         super.onDestroy();
     }
     private File getDir() {
@@ -141,7 +141,7 @@ public class FrontCamService extends HiddenCameraService {
         if (!photoFileDir.exists() && !photoFileDir.mkdirs()) {
 
             Log.d("directory error", "Can't create directory to save image.");
-            Toast.makeText(this, "Can't create directory to save image.",
+            Toast.makeText(getApplicationContext(), "Can't create directory to save image.",
                     Toast.LENGTH_LONG).show();
             return null;
 
